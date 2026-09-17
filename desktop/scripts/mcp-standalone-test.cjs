@@ -1,0 +1,21 @@
+const path=require('node:path'),fs=require('node:fs'),assert=require('node:assert/strict');
+const root=path.resolve(__dirname,'../..');
+const dataDir=process.env.OA_TEST_DATA || path.join(root,'desktop/test-output/service');
+const report=JSON.parse(fs.readFileSync(path.join(dataDir,'smoke-result.json')));
+const {Client}=require(path.join(root,'server/node_modules/@modelcontextprotocol/sdk/dist/cjs/client/index.js'));
+const {StdioClientTransport}=require(path.join(root,'server/node_modules/@modelcontextprotocol/sdk/dist/cjs/client/stdio.js'));
+const transport=new StdioClientTransport({command:path.resolve(__dirname,'../assets/node.exe'),args:[path.resolve(__dirname,'../mcp.cjs')],env:{...process.env,OA_DATA_DIR:dataDir},stderr:'pipe'});
+const client=new Client({name:'oa-standalone-test',version:'1.0.0'});
+(async()=>{
+ const before=fs.readFileSync(path.join(dataDir,'storage/anythingllm.db'));
+ await client.connect(transport);
+ const result=await client.callTool({name:'search_knowledge',arguments:{workspace:report.workspace,query:'借用多久？'}});
+ assert.ok(!result.isError,JSON.stringify(result));assert.match(result.content[0].text,/十四天/);
+ const workspaces=await client.callTool({name:'list_workspaces',arguments:{}});assert.ok(!workspaces.isError);
+ const docs=await client.callTool({name:'list_documents',arguments:{workspace:report.workspace}});const documentId=JSON.parse(docs.content[0].text)[0].id;
+ const source=await client.callTool({name:'read_document',arguments:{workspace:report.workspace,documentId,length:8000}});assert.match(source.content[0].text,/OA-DEMO-2026-ALPHA/);
+ await client.close();
+ assert.deepEqual(fs.readFileSync(path.join(dataDir,'storage/anythingllm.db')),before,'MCP must not mutate SQLite data');
+ const resultReport={passed:true,at:new Date().toISOString(),checks:['MCP searches while desktop and HTTP services are stopped','All four read tools work','SQLite file unchanged after MCP reads']};
+ fs.writeFileSync(path.join(dataDir,'mcp-standalone-result.json'),JSON.stringify(resultReport,null,2));console.log(JSON.stringify(resultReport));
+})().catch(error=>{console.error(error);process.exitCode=1;}).finally(()=>client.close());

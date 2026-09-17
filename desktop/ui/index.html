@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>OA 知識庫</title><link rel="stylesheet" href="/style.css"><script defer src="/app.js"></script></head>
+<body>
+<aside class="sidebar">
+  <div class="brand"><span class="brand-mark">▦</span><div>OA 知識庫<small>YOUR LOCAL KNOWLEDGE</small></div></div>
+  <button id="new-workspace" class="new-button">＋ 建立知識庫</button>
+  <div class="section-label">工作區 <span id="workspace-count">0</span></div>
+  <nav id="workspaces" aria-label="知識庫"></nav>
+  <div class="sidebar-bottom"><button id="connections">⌘　連接 Claude Code / Codex</button><div class="local-badge"><i></i> 本機儲存 · 本機索引</div><small>基於 AnythingLLM 開源架構<br>OA Desktop 0.1 · IT 審核測試版</small></div>
+</aside>
+<main>
+  <header><div class="breadcrumb">知識管理 <span>/</span> <strong id="workspace-title">開始建立你的知識庫</strong></div><span class="pill">LOCAL</span></header>
+  <section id="welcome" class="welcome"><div class="eyebrow">KNOWLEDGE, WITH YOU.</div><h1>把文件留在本機，<br>讓 AI 找到有用的答案。</h1><p>匯入、整理、搜尋你的工作文件。<br>再透過 MCP，交給公司核准的 Claude Code 或 Codex 使用。</p><button id="welcome-create" class="primary">建立第一個知識庫　→</button><div class="steps"><article><span>01</span><h3>匯入文件</h3><p>PDF、Word、文字與 Markdown</p></article><article><span>02</span><h3>本機建立索引</h3><p>多語語意搜尋，支援中文文件</p></article><article><span>03</span><h3>連接你的 AI 工具</h3><p>搜尋片段與來源，透過 MCP 取用</p></article></div></section>
+  <section id="workspace-view" hidden>
+    <div class="workspace-heading"><div><h1 id="page-title"></h1><p id="document-summary">準備匯入文件</p></div><button id="upload" class="primary">＋ 匯入文件</button></div>
+    <div class="tabs"><button class="tab active" data-tab="search">搜尋知識</button><button class="tab" data-tab="documents">文件管理 <span id="document-count">0</span></button></div>
+    <section id="search-view"><form id="search-form"><div class="search-box"><span>⌕</span><input id="query" placeholder="用一句話搜尋，例如：請假申請需要哪些步驟？" maxlength="2000" autocomplete="off" required><button class="primary" id="search-button">搜尋</button></div></form><p class="search-hint">本機語意檢索 · 顯示原文片段與來源 · 不會在此呼叫對話模型</p><div id="results" aria-live="polite"><div class="empty"><div class="empty-icon">⌕</div><h2>從文件裡找到線索</h2><p>匯入文件後，輸入問題或關鍵字。<br>這裡會顯示相關的原文片段。</p></div></div></section>
+    <section id="documents-view" hidden><div id="dropzone" tabindex="0" role="button" aria-label="拖放或選擇文件"><strong>拖放文件到這裡，或點擊選擇</strong><span>TXT · Markdown · PDF（文字型）· DOCX · CSV · XLSX · JSON</span><small>文件解析與嵌入模型都在本機執行；掃描 PDF 的 OCR 不包含在此測試版。</small></div><div id="documents"></div><div class="workspace-actions"><button id="delete-workspace" class="danger-link">刪除此知識庫與索引</button></div></section>
+  </section>
+  <section id="connections-view" hidden><div class="eyebrow">CONNECT YOUR TOOLS</div><h1>把知識庫接到你的工作流程</h1><p>桌面程式負責文件與索引；Claude Code / Codex 負責理解、回答與引用。</p><div class="flow"><span>本機文件</span><b>→</b><span>本機向量索引</span><b>→</b><span>MCP 搜尋片段</span><b>→</b><span>核准的 AI 工具</span></div><p class="notice">MCP 回傳的片段會提供給你連接的 AI 工具與其模型。請依公司核准的工具與帳號設定使用。</p><div class="config"><h2>Codex <button id="copy-codex">複製設定</button></h2><p>將下列區塊加入 Codex 的 config.toml（由 IT 核准後設定）。</p><pre id="codex-config"></pre></div><div class="config"><h2>Claude Code <button id="copy-claude">複製設定</button></h2><p>將此伺服器設定合併至專案的 .mcp.json。</p><pre id="claude-config"></pre></div><p class="search-hint">可用工具：list_workspaces · list_documents · search_knowledge · read_document<br>MCP 只讀取知識庫，沒有寫入、刪除或執行指令的工具。桌面程式關閉後仍可查詢。</p></section>
+  <footer><span id="status">啟動中…</span><span id="storage-label"></span></footer>
+</main>
+<input id="file-picker" type="file" accept=".txt,.md,.pdf,.docx,.csv,.xlsx,.json" multiple hidden>
+<dialog id="create-dialog"><form id="create-form"><h2>建立知識庫</h2><p>依專案或主題整理你的文件。</p><label for="workspace-name">名稱</label><input id="workspace-name" placeholder="例如：行政作業、產品手冊" maxlength="80" required><div class="dialog-actions"><button type="button" id="cancel-create">取消</button><button type="submit" class="primary">建立</button></div></form></dialog>
+<dialog id="source-dialog"><h2 id="source-title"></h2><pre id="source-text"></pre><button id="close-source">關閉</button></dialog>
+<div id="toast" role="status" hidden></div>
+</body></html>

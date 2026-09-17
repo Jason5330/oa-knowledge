@@ -1,0 +1,24 @@
+✔ invalid backup index rolls back every newly restored workspace (20.5871ms)
+✔ read-only store cannot mutate and backup triggers are rejected (29.3405ms)
+✔ local model configuration rejects remote URLs and unusual paths (0.8924ms)
+✔ office extraction preserves Unicode and XML escapes without external entities (16.7714ms)
+✔ OOXML relationship mapping, hidden exclusions, merged multi-row headers and formatted values (13.9193ms)
+✔ explicit hidden inclusion and manual header override are preserved (3.6546ms)
+✔ 1904 date system and declared Excel Table headers are distinct from guesses (3.3272ms)
+✔ structured MCP queries aggregate full rows and exclude totals, missing values and other scopes (4.239ms)
+✔ numeric-first regions never discard data as context before a guessed text footer (2.2642ms)
+✔ hidden middle columns do not detach visible row identifiers and shared formulas remain explicit (2.2871ms)
+✔ shared JSON and TOML contain no installation paths (1.1171ms)
+✔ universal launcher resolves relocated Unicode paths and custom data, with desktop closed (933.4282ms)
+✔ allow only exact loopback ports, reject remote aliases and credentials (0.8546ms)
+✔ remote integrations and configuration mutation are denied (0.1757ms)
+✔ actual preload rejects network, DNS and subprocess attempts (85.1796ms)
+✔ desktop API session token is mandatory (3.293ms)
+ℹ tests 16
+ℹ suites 0
+ℹ pass 16
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1163.5714

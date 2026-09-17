@@ -1,0 +1,10 @@
+{
+  "passed": true,
+  "at": "2026-09-17T07:41:42.884Z",
+  "checks": [
+    "Startup creates consistent backup before upgrading legacy XLSX",
+    "Valid workbook upgraded with same document ID and original bytes",
+    "Invalid workbook preserved and reported as an error",
+    "Unupgraded XLSX excluded from semantic search"
+  ]
+}

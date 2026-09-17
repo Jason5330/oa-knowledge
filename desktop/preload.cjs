@@ -1,0 +1,2 @@
+const {contextBridge,ipcRenderer}=require('electron');
+contextBridge.exposeInMainWorld('oaDesktop',{backup:()=>ipcRenderer.invoke('oa-native','backup'),restore:()=>ipcRenderer.invoke('oa-native','restore'),openData:()=>ipcRenderer.invoke('oa-native','open-data'),exportDocument:(workspace,documentId)=>ipcRenderer.invoke('oa-native','export-document',{workspace,documentId}),exportExcel:(workspace,documentId)=>ipcRenderer.invoke('oa-native','export-excel',{workspace,documentId})});
