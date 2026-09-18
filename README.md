@@ -23,10 +23,20 @@ Windows 本機文件知識庫，支援 Excel 結構化整理，讓 Claude Code�
 
 ## Claude Code／Codex 怎麼連接？
 
-每人先開啟 OA 程式一次，使用介面的「複製通用設定」。設定不含開發者帳號或安裝路徑，搬移／升級後開啟新位置的 EXE，再重新載入 AI 工具即可。
+每人先開啟 OA 程式一次。設定不含開發者帳號或安裝路徑，搬移／升級後開啟新位置的 EXE，再重新載入 AI 工具即可。
 
-- **Claude Code**：專案沒有 `.mcp.json` 時，建立檔案並貼上完整 JSON。如果檔案已設定其他工具，在原有 `mcpServers` 工具清單裡新增 `oa-knowledge`，不要把整份檔案覆蓋掉。
+- **Claude Code（建議使用者共用註冊）**：在放有 `OA-Knowledge.exe` 的資料夾開啟 PowerShell，執行下方三行。指令要在 PowerShell 執行，不要貼到 Claude 對話框。
 - **Codex**：將通用 TOML 加入使用者目錄的 `.codex/config.toml`；保留其他設定，同名 OA 區塊只留一份。
+
+```powershell
+$oa = (Get-Content -LiteralPath '.\connections\claude.mcp.json' -Raw -Encoding UTF8 | ConvertFrom-Json).mcpServers.'oa-knowledge'
+$oaArgs = @($oa.args)
+claude mcp add --scope user --transport stdio oa-knowledge -- $oa.command @oaArgs
+```
+
+再執行 `claude mcp get oa-knowledge`，確認顯示 `Connected`。接著重新開啟 Claude Code 工作階段，輸入 `/mcp` 查看連接。`--scope user` 讓目前 Windows 帳號的不同專案共用連接，不需每個專案建立 JSON。
+
+如果只想在單一專案啟用，可選用專案設定檔 **`.mcp.json`（最前面有點）**。把普通 `mcp.json` 傳給 Claude 閱讀，不會自動註冊 MCP。已有其他 MCP 工具時，不要覆蓋整份設定。
 
 完整步驟與排除問題：[CONNECT-AI.md](desktop/CONNECT-AI.md)。
 
@@ -41,6 +51,7 @@ Windows 本機文件知識庫，支援 Excel 結構化整理，讓 Claude Code�
 | 項目 | 範圍 |
 | --- | --- |
 | OA 知識庫資料 | 目前 Windows 帳號共用 |
+| Claude Code 的 `--scope user` 註冊 | 使用者層級，可供不同專案使用 |
 | Claude Code 專案的 `.mcp.json` | 該專案啟用連接 |
 | Codex 使用者的 `.codex/config.toml` | 使用者層級，可供本機不同專案使用 |
 
