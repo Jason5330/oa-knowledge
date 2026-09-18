@@ -1,10 +1,23 @@
-# OA 知識庫 0.3.1 — 使用說明
+# OA 知識庫 0.3.2 — 使用說明
+
+## Excel 自動結構化（0.3.2）
+
+直接匯入 XLSX 即可，無須預先轉檔、指定表頭、匯出 JSON 或再匯入。程式會在本機自動解析工作表、資料區域、欄位、型別、儲存格來源與公式快取，將結構化 JSON 保存於 knowledge.sqlite，並建立搜尋索引。這是資料庫內的 JSON，不會要求使用者管理另一份獨立檔案。
+
+AI 透過 list_documents 可看到 structured.status=ready；接著用 inspect_excel / read_excel_rows 直接取得 JSON，使用 aggregate_excel 計算完整資料區域。匯入後即可使用，不必先打開人工預覽。既有 parserVersion=3 的 Excel 也能直接使用，無须重新匯入。
+
+0.3.2 的統計預設接受自動推測表頭，回傳 headerSource、inferredHeadersUsed、來源列及警告；不把推測標示為已確認。嚴格模式可明確指定 acceptInferredHeaders=false。結構的 reviewRecommended 只表示推測結果建議核對，manualPreparationRequired=false 表示人工準備並非前置步驟；舊的 requiresReview 欄位於讀取時轉換。
+
+「AI 資料」顯示 JSON 已就緒。「下載 JSON 副本（選用）」只用於另存／分享資料，不會觸發首次結構化。「查看資料與進階解析設定」預設收合；只有要修正解析或改變是否包含隱藏資料時才需要操作。
+
+公式仍使用檔案儲存的結果、不重新計算；隱藏資料仍預設排除。自動結構化不代表能保證任意複雜報表的商業語意正確，解析警告會隨 JSON 回傳給 AI。
+
 
 這是供個人本機使用的 Windows 桌面知識庫。主要用途是整理文件，再讓 Claude Code／Codex 透過 MCP 讀取片段與來源；另提供選配的本機模型連接介面。
 
 ## 開始使用
 
-1. 保留 `OA-Knowledge-0.3.1-win-x64` 整個資料夾，雙擊 `OA-Knowledge.exe`。不需要另外安裝 Node、Python 或 Docker。
+1. 保留 `OA-Knowledge-0.3.2-win-x64` 整個資料夾，雙擊 `OA-Knowledge.exe`。不需要另外安裝 Node、Python 或 Docker。
 2. 建立知識庫，按「匯入文件」或在「文件管理」匯入資料夾。第一次嵌入會載入隨附的中文／多語模型，無須上網下載。
 3. 在搜尋框輸入問題，閱讀原文片段，按「閱讀完整來源」核對；長文件可按上一段／下一段。
 4. Claude Code 建議依 [連接教學](CONNECT-AI.md) 在 PowerShell 完成「使用者共用註冊」，確認 `Connected` 後開啟新的工作階段。Codex 則按左下角「連接 Claude Code / Codex」，複製 TOML 加入工具設定。完成後可問：「列出 OA 知識庫，搜尋設備借用期限，附上來源。」
@@ -59,4 +72,4 @@ Claude Code／Codex 安裝在電腦上，不代表其模型運算也在本機。
 
 ## Excel 結構化處理（0.3）
 
-XLSX 現在保留欄位、型別、原始值、顯示值與公式狀態；預設排除隱藏資料。文件管理中的「Excel 結構」可核對並指定表頭，另可匯出結構化 JSON。新增 inspect_excel、read_excel_rows、aggregate_excel 三個 MCP 工具；詳見 [Excel 評估與實作](EXCEL-DESIGN.md)。舊版 XLSX 在新版啟動時先備份，再從原始檔升級結構與索引。
+XLSX 現在保留欄位、型別、原始值、顯示值與公式狀態；預設排除隱藏資料。文件管理中的「AI 資料」會顯示自動結構化已完成；人工核對、指定表頭與下載 JSON 副本都是選用功能。新增 inspect_excel、read_excel_rows、aggregate_excel 三個 MCP 工具；詳見 [Excel 評估與實作](EXCEL-DESIGN.md)。舊版 XLSX 在新版啟動時先備份，再從原始檔升級結構與索引。

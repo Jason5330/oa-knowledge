@@ -1,6 +1,6 @@
 {
   "passed": true,
-  "at": "2026-09-17T08:15:51.161Z",
+  "at": "2026-09-18T00:58:47.977Z",
   "checks": [
     "Packaged MCP searches with desktop and HTTP service stopped",
     "SQLite database file unchanged after read-only MCP retrieval"

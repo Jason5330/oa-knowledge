@@ -60,3 +60,15 @@ XLSX 現在保留欄位、型別、原始值、顯示值與公式狀態；預設
 ## 0.3.1 通用 MCP 入口
 
 `mcp-config.cjs` 產生不含安裝路徑的設定。`main.cjs` 完成服務啟動後，以原子替換登記每位使用者的 `LocalAppData/OA-Knowledge/mcp/connection.json`；測試模式跳過個人登記。PowerShell 僅讀取 JSON，將路徑以獨立參數傳給 bundled Node，不使用 Invoke-Expression 或改動 ExecutionPolicy。搬移／升級後先啟動新位置，再重啟客戶端。詳見 CONNECT-AI.md。
+
+## Excel 自動結構化（0.3.2）
+
+直接匯入 XLSX 即可，無須預先轉檔、指定表頭、匯出 JSON 或再匯入。程式會在本機自動解析工作表、資料區域、欄位、型別、儲存格來源與公式快取，將結構化 JSON 保存於 knowledge.sqlite，並建立搜尋索引。這是資料庫內的 JSON，不會要求使用者管理另一份獨立檔案。
+
+AI 透過 list_documents 可看到 structured.status=ready；接著用 inspect_excel / read_excel_rows 直接取得 JSON，使用 aggregate_excel 計算完整資料區域。匯入後即可使用，不必先打開人工預覽。既有 parserVersion=3 的 Excel 也能直接使用，無须重新匯入。
+
+0.3.2 的統計預設接受自動推測表頭，回傳 headerSource、inferredHeadersUsed、來源列及警告；不把推測標示為已確認。嚴格模式可明確指定 acceptInferredHeaders=false。結構的 reviewRecommended 只表示推測結果建議核對，manualPreparationRequired=false 表示人工準備並非前置步驟；舊的 requiresReview 欄位於讀取時轉換。
+
+「AI 資料」顯示 JSON 已就緒。「下載 JSON 副本（選用）」只用於另存／分享資料，不會觸發首次結構化。「查看資料與進階解析設定」預設收合；只有要修正解析或改變是否包含隱藏資料時才需要操作。
+
+公式仍使用檔案儲存的結果、不重新計算；隱藏資料仍預設排除。自動結構化不代表能保證任意複雜報表的商業語意正確，解析警告會隨 JSON 回傳給 AI。

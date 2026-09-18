@@ -96,7 +96,7 @@ function parseExcel(buffer,input={}){
       }
       const columns=[];for(let c=b.c1;c<=b.c2;c++){if(hiddenCol(c)&&!config.includeHidden)continue;const labels=headerRows.map(r=>at(r,c)?.display).filter(Boolean);const unique=[...new Set(labels)];columns.push({column:col(c),label:!manual&&isTable&&region.columns[c-b.c1]?region.columns[c-b.c1]:unique.join(' / ')||col(c),headerRefs:headerRows.map(r=>at(r,c)?.mergedFrom||col(c)+r),types:[]});}
       const context=[...rowMap.keys()].filter(r=>r>=b.r1&&headerRows.length&&r<headerRows[0]).flatMap(r=>rowMap.get(r).filter(c=>c.columnIndex>=b.c1&&c.columnIndex<=b.c2).map(c=>c.display)).join(' · ').slice(0,500);
-      const table={id,name:region.name,sheet:name,range:rangeName(b),headerRows,headerSource:manual?'manual':isTable?'excel-table':'inferred',requiresReview:!manual&&!isTable,context,columns,rows:[]};
+      const table={id,name:region.name,sheet:name,range:rangeName(b),headerRows,headerSource:manual?'manual':isTable?'excel-table':'inferred',reviewRecommended:!manual&&!isTable,context,columns,rows:[]};
       for(const r of [...rowMap.keys()].filter(r=>r>=b.r1&&r<=b.r2).sort((a,b)=>a-b)){
         if(headerRows.includes(r)||headerRows.length&&r<headerRows[0])continue;
         const selected=columns.map(c=>{const cell=at(r,address(c.column+'1').c);return cell?{...cell,field:c.label}:null;}).filter(Boolean);if(!selected.length)continue;
@@ -111,7 +111,7 @@ function parseExcel(buffer,input={}){
   }
   if(report.formulaCount)warn('cached-formulas','公式只使用檔案已儲存的結果，未重新計算；不能保證結果是最新的。',report.formulaCount);
   if(report.missingFormulaResults)warn('missing-formula-results','公式缺少已儲存結果，標示為未知，不當成 0。',report.missingFormulaResults);
-  if(report.tables.some(t=>t.requiresReview))warn('headers-inferred','部分表頭由規則推測；請在 Excel 解析檢視核對或指定表頭列。',report.tables.filter(t=>t.requiresReview).length);
+  if(report.tables.some(t=>t.reviewRecommended))warn('headers-inferred','部分表頭由規則自動推測，資料已可供 AI 讀取；欄位語意可能有誤，必要時可選擇修正。',report.tables.filter(t=>t.reviewRecommended).length);
   if(Object.values(report.hiddenExcluded).some(Boolean))warn('hidden-excluded','預設排除隱藏工作表、列與欄；可在解析設定明確選擇包含。');
   report.warnings=[...warnings.values()];
   const summary=`Excel 活頁簿：${report.sheets.length} 個已解析工作表，${report.tables.length} 個資料區域。\n${report.sheets.map(s=>s.name).join('、')}\n${report.warnings.map(w=>w.message).join('\n')}`;

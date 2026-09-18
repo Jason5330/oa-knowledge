@@ -1,4 +1,4 @@
-# OA Knowledge 0.3.1
+# OA Knowledge 0.3.2
 
 Windows 本機知識庫：匯入文件、結構化 Excel，透過唯讀 MCP 連接 Claude Code／Codex。
 

@@ -40,7 +40,7 @@ const server=http.createServer(async(req,res)=>{
     const url=new URL(req.url,'http://127.0.0.1'),p=url.pathname,method=req.method;
     if(method==='GET'&&['/','/app-v2.js','/style.css','/complete.css','/excel.css','/excel-ui.js'].includes(p)){const file=path.join(__dirname,'../ui',p==='/'?'index-v2.html':p.slice(1));res.writeHead(200,{'Content-Type':p.endsWith('.js')?'text/javascript; charset=utf-8':p.endsWith('.css')?'text/css; charset=utf-8':'text/html; charset=utf-8','Cache-Control':'no-store','X-Content-Type-Options':'nosniff'});fs.createReadStream(file).pipe(res);return;}
     if(!p.startsWith('/api/oa/'))return json(res,{error:'此功能未開放'},403);
-    if(method==='GET'&&p==='/api/oa/status')return json(res,{name:'OA 知識庫',version:'0.3.1',storage:dir,...store.stats(),legacy:fs.existsSync(path.join(dir,'storage/anythingllm.db')),job:active?.id||null});
+    if(method==='GET'&&p==='/api/oa/status')return json(res,{name:'OA 知識庫',version:'0.3.2',storage:dir,...store.stats(),legacy:fs.existsSync(path.join(dir,'storage/anythingllm.db')),job:active?.id||null});
     if(method==='GET'&&p==='/api/oa/workspaces')return json(res,store.listWorkspaces({offset:Number(url.searchParams.get('offset')||0),limit:1000}));
     if(method==='POST'&&p==='/api/oa/workspaces'){idle();return json(res,store.create((await input(req)).name));}
     if(method==='PATCH'&&p==='/api/oa/workspaces'){idle();const b=await input(req);return json(res,store.rename(b.workspace,b.name));}
@@ -63,7 +63,7 @@ const server=http.createServer(async(req,res)=>{
       idle();const workspace=url.searchParams.get('workspace'),name=url.searchParams.get('name');store.workspace(workspace);require('./store.cjs').str(name,255);
       const replaceId=url.searchParams.get('replaceId')||undefined;if(replaceId)store.document(workspace,replaceId);
       const options=require('./excel.cjs').options({includeHidden:url.searchParams.get('includeHidden')==='true'});
-      const bytes=await body(req,50*1024*1024);return json(res,job(async j=>{j.stage='解析文件';const pages=await parse(bytes,name,j,options);return store.index(workspace,name,bytes,pages,j,replaceId);}),202);
+      const bytes=await body(req,50*1024*1024);return json(res,job(async j=>{j.stage=/\.xlsx$/i.test(name)?'Excel：自動建立結構化 JSON':'解析文件';const pages=await parse(bytes,name,j,options);return store.index(workspace,name,bytes,pages,j,replaceId);}),202);
     }
     if(method==='POST'&&p==='/api/oa/reindex'){const b=await input(req);const d=store.document(b.workspace,b.documentId);return json(res,job(async j=>{let pages=JSON.parse(d.pages);if(/\.xlsx$/i.test(d.name))pages=await parse(Buffer.from(d.original),d.name,j,pages.find(p=>p.kind==='excel-workbook')?.workbook?.options||{});return store.index(b.workspace,d.name,Buffer.from(d.original),pages,j,d.id);}),202);}
     if(method==='GET'&&p==='/api/oa/job'){const j=jobs.get(url.searchParams.get('id'));if(!j)throw new Error('找不到作業');const {worker,...safe}=j;return json(res,safe);}

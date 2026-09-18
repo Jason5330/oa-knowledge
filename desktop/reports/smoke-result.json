@@ -1,6 +1,6 @@
 {
   "passed": true,
-  "at": "2026-09-17T08:15:34.000Z",
+  "at": "2026-09-18T00:58:22.778Z",
   "checks": [
     "Session authentication required",
     "Unlisted APIs blocked",
@@ -33,6 +33,7 @@
     "Desktop search, settings, MCP instructions and native bridge render",
     "Native preload/IPC backup, restore and original export execute successfully (file dialogs stubbed to test paths)",
     "Excel import persists typed rows, merged headers, cached formulas and safe hidden defaults",
+    "Excel import immediately exposes saved JSON metadata and real MCP aggregation without manual headers or export/re-import",
     "Confirmed Excel headers enable deterministic full-table aggregation without double-counting totals",
     "Failed Excel reparse preserves previous structured data and index",
     "Structured JSON export preserves schema and excludes hidden cell values",
@@ -40,6 +41,6 @@
     "Backup/restore retains Excel schema and confirmed header settings",
     "Excel desktop preview and native JSON export execute successfully"
   ],
-  "workspace": "87d777d2-eebe-4757-a3de-0126afa857e7",
+  "workspace": "46b44b18-22db-421f-8345-627ae8ff7dcc",
   "fixture": "Synthetic documents only; no external model client connected"
 }

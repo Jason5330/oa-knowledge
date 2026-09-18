@@ -90,7 +90,7 @@ async function start() {
         if(!args||typeof args.workspace!=='string'||typeof args.documentId!=='string')throw new Error('Invalid document');
         const r=await fetch(origin+'/api/oa/'+(action==='export-excel'?'excel/export':'export')+'?'+new URLSearchParams(args),{headers});if(!r.ok)throw new Error((await r.json()).error);
         const name=path.basename(decodeURIComponent(r.headers.get('x-file-name')||'document.txt')).replace(/[<>:"|?*]/g,'_');
-        const selected=await dialog.showSaveDialog(win,{title:'匯出原始文件',defaultPath:name});if(selected.canceled){await r.body.cancel();return {cancelled:true};}
+        const selected=await dialog.showSaveDialog(win,{title:action==='export-excel'?'下載 Excel JSON 副本':'匯出原始文件',defaultPath:name});if(selected.canceled){await r.body.cancel();return {cancelled:true};}
         fs.writeFileSync(selected.filePath,Buffer.from(await r.arrayBuffer()));return {success:true};
       }
       throw new Error('Unknown native action');

@@ -13,6 +13,10 @@ Windows 本機文件知識庫，支援 Excel 結構化整理，讓 Claude Code�
 
 程式包含本機嵌入模型與執行環境，ZIP 約 640 MiB。GitHub 自動產生的 Source code ZIP 是原始碼，不是可直接執行的 Windows 程式。
 
+## 0.3.2 原始碼更新
+
+Excel 匯入後的結構化 JSON 已可直接供 AI 使用；新介面會標示「AI JSON 已自動建立」，人工表頭調整與下載 JSON 改為選用。統計預設接受推測表頭並附警告。詳見 [自動結構化說明](desktop/USER-GUIDE.md)。現有 0.3.1 Release 的檔案不會因原始碼更新而自動替換。
+
 ## 功能
 
 - 匯入 TXT、Markdown、文字型 PDF、DOCX、XLSX、PPTX、CSV、JSON。
@@ -69,7 +73,7 @@ claude mcp add --scope user --transport stdio oa-knowledge -- $oa.command @oaArg
 
 此儲存庫包含獨立桌面核心，不需要原版 AnythingLLM 的 server／collector。Windows 建置需要公開依賴與模型下載，步驟見 [ARCHITECTURE.md](desktop/ARCHITECTURE.md)。
 
-0.3.1 已通過 16 項核心測試與 37 項封裝整合檢查，另驗證關閉桌面後搜尋及搬移入口。測試使用虛構資料與 MCP 客戶端，未連接實際 Claude／Codex 帳號；本機回答介面使用模擬模型測試。紀錄見 [desktop/reports](desktop/reports)。
+0.3.2 原始碼與本機成品已通過 17 項核心測試與 38 項封裝整合檢查，另驗證關閉桌面後搜尋及搬移入口。測試使用虛構資料與 MCP 客戶端，未連接實際 Claude／Codex 帳號；本機回答介面使用模擬模型測試。紀錄見 [desktop/reports](desktop/reports)。
 
 ## 授權與來源
 
